@@ -1,0 +1,23 @@
+<script src="https://gitcdn.link/repo/GluuFederation/openid-implicit-client/master/openidconnect.js"></script>
+<script>
+var check = sessionStorage['idToken'];
+
+if(typeof check == 'undefined') {
+  OIDC.restoreInfo();
+  var id_token = OIDC.getValidIdToken();
+  var access_token = OIDC.getAccessToken();
+  var user_info = OIDC.getUserInfo(access_token);
+  OIDC.debug(true, id_token);
+  sessionStorage['access_token'] = access_token;
+  sessionStorage['id_token'] = id_token;
+  sessionStorage['userInfo'] = user_info;
+}
+var tokenClaims = JSON.parse(OIDC.getIdTokenParts(id_token)[1]);
+var userInfoClaims = JSON.parse(OIDC.getUserInfo(access_token));
+
+document.addEventListener('DOMContentLoaded', function() {
+    var tokenClaimsHTMLString = JSONObjToHTMLTable(tokenClaims);
+    var userInfoClaimsHTMLString = JSONObjToHTMLTable(userInfoClaims);
+    document.body.innerHTML = tokenClaimsHTMLString + userInfoClaimsHTMLString;
+})
+</script>
