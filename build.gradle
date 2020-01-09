@@ -20,11 +20,12 @@ springBoot {
     buildInfo()
 }
 
+
 dependencies {
-    // gluu
-    implementation ('org.gluu:oxd-client:4.0-SNAPSHOT') {
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+    // gluu 스프링 로깅모듈과 충돌나는 현상 존재
+    implementation ('org.gluu:oxd-client:4.1.0.Final') {
+        exclude group: 'org.slf4j'
+        exclude group: 'org.apache.logging.log4j'
     }
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-web'
