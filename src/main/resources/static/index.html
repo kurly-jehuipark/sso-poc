@@ -19,12 +19,57 @@ sessionStorage.removeItem('nonce');
 
 </script>
 <body>
-    <a href="https://sso1.infra.kurlycorp.kr/oxauth/restv1/end_session">세션종료</a> <br>
+<!--    <input type="text" id="id_token" placeholder="id_token">-->
+    <button onclick="endSession()">로그아웃</button> <br>
     <button onClick="OIDC.login( {scope : 'openid profile email',
                             response_type : 'token id_token'} );"
         type="button">Implict</button> <br>
-    <a href="javascript:alert('아직 진행중')">Client Credential</a> <br>
-    <a href="javascript:alert('아직 진행중')">Resource Owner Password Credentials</a> <br>
-    <a href="https://sso1.infra.kurlycorp.kr/oxauth/restv1/authorize?scope=openid&response_type=code&client_id=51d2eade-bb8e-405b-b5e9-93dc11710d43&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthorize%2Fcallback">Authorization Code Grant Type</a>
+    <button onclick="clientGrant()">Client Credential</button> <br>
+    <input type="text" id="username" placeholder="user_id">
+    <input type="password" id="password" placeholder="password">
+    <button onclick="resourceOwnerGrant()">Resource Owner Password Credentials</button> <br>
+    <button onclick="authorizationCodeGrant()">Authorization Code Grant Type</button> <br>
 </body>
+<script>
+
+function clientGrant() {
+  window.open('/oauth/client',
+    'pop01', 'top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizable=no');
+}
+
+function resourceOwnerGrant() {
+
+  var username = document.querySelector('#username').value;
+  var password = document.querySelector('#password').value;
+
+  if (!username) {
+    alert('아이디를 입력하세요.');
+  }
+
+  if (!password) {
+    alert('패스워드를 입력하세요.');
+  }
+
+  window.open('/oauth/resource?username='+username+'&password='+password,
+    'pop01', 'top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizable=no');
+}
+
+function authorizationCodeGrant() {
+  window.open('https://sso1.infra.kurlycorp.kr/oxauth/restv1/authorize?scope=openid&response_type=code&client_id=51d2eade-bb8e-405b-b5e9-93dc11710d43&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthorize%2Fcallback',
+    'pop01', 'top=10, left=10, width=500, height=600, status=no, menubar=no, toolbar=no, resizable=no');
+}
+
+function endSession() {
+  // var value = document.querySelector('#id_token').value;
+
+  // if (!value) {
+  //   alert('id_token을 입력해주세요.');
+  //   return;
+  // }
+
+  var endSessionUrl = 'https://sso1.infra.kurlycorp.kr/oxauth/restv1/end_session?'+
+    encodeURIComponent('post_logout_redirect_uri=http://localhost:8080/index.html');
+  location.href = endSessionUrl;
+}
+</script>
 </html>

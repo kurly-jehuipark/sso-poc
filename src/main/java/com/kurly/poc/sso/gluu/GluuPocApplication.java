@@ -51,7 +51,8 @@ public class GluuPocApplication {
   }
 
   @RequestMapping("/authorize/callback")
-  public Object test(@RequestParam Map<?, ?> param) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
+  public Object test(@RequestParam Map<?, ?> param) throws NoSuchAlgorithmException,
+      KeyStoreException, KeyManagementException, IOException {
 
     log.info("authorize - callback");
 
@@ -108,9 +109,90 @@ public class GluuPocApplication {
     return param;
   }
 
+  @RequestMapping("/oauth/resource")
+  public Object test3(@RequestParam("username") String username,
+                      @RequestParam("password") String password) throws NoSuchAlgorithmException,
+      KeyStoreException, KeyManagementException, IOException {
+
+    String tokenUrl = "https://sso1.infra.kurlycorp.kr/oxauth/restv1/token";
+
+    RestTemplate restTemplate = sslIgnoreRestTemplate();
+
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("scope", "openid");
+    body.add("grant_type", "password");
+    body.add("username", username);
+    body.add("password", password);
+
+    Map<String, Object> out = new HashMap<>();
+
+    try {
+      @SuppressWarnings("Convert2Diamond")
+      ResponseEntity<HashMap<String, Object>> responseEntity =
+          restTemplate.exchange(
+              RequestEntity.post(URI.create(tokenUrl))
+                  .header("Authorization", "Basic " + pocClientCredential())
+                  .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                  .body(body),
+              new ParameterizedTypeReference<HashMap<String, Object>>() {
+              });
+      out.put("response", responseEntity.getBody());
+    } catch (HttpClientErrorException e) {
+      out.put("token_response",
+          objectMapper.readValue(
+              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {
+              }));
+    } catch (RestClientException e) {
+      log.error("error", e);
+    }
+
+    return out;
+  }
+
+  @RequestMapping("/oauth/client")
+  public Object test4() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
+    // Parameters
+    String tokenUrl = "https://sso1.infra.kurlycorp.kr/oxauth/restv1/token";
+
+    RestTemplate restTemplate = sslIgnoreRestTemplate();
+
+    MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+    body.add("scope", "openid");
+    body.add("grant_type", "client_credentials");
+
+    Map<String, Object> out = new HashMap<>();
+
+    try {
+      @SuppressWarnings("Convert2Diamond")
+      ResponseEntity<HashMap<String, Object>> responseEntity =
+          restTemplate.exchange(
+              RequestEntity.post(URI.create(tokenUrl))
+                  .header("Authorization", "Basic " + pocClientCredential())
+                  .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                  .body(body),
+              new ParameterizedTypeReference<HashMap<String, Object>>() {
+              });
+      out.put("response", responseEntity.getBody());
+    } catch (HttpClientErrorException e) {
+      out.put("token_response",
+          objectMapper.readValue(
+              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {
+              }));
+    } catch (RestClientException e) {
+      log.error("error", e);
+    }
+
+    return out;
+  }
+
   @Autowired
   public void setObjectMapper(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
+  }
+
+  private String pocClientCredential() {
+    return Base64.getEncoder().encodeToString(
+        "51d2eade-bb8e-405b-b5e9-93dc11710d43:UxxmtOfXJixevkLhEn38Hpte".getBytes());
   }
 
   private RestTemplate sslIgnoreRestTemplate()
