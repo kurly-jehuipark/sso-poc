@@ -80,8 +80,7 @@ public class GluuPocApplication {
               .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(
                   "51d2eade-bb8e-405b-b5e9-93dc11710d43:UxxmtOfXJixevkLhEn38Hpte".getBytes()))
               .body(body),
-          new ParameterizedTypeReference<HashMap<?, ?>>() {
-          });
+          new ParameterizedTypeReference<HashMap<?, ?>>() {});
       out.put("token_reponse", response.getBody());
 
       @SuppressWarnings("ConstantConditions")
@@ -94,8 +93,7 @@ public class GluuPocApplication {
     } catch (HttpClientErrorException e) {
       out.put("token_response",
           objectMapper.readValue(
-              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {
-              }));
+              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {}));
     } catch (RestClientException e) {
       log.error("error", e);
     }
@@ -134,14 +132,12 @@ public class GluuPocApplication {
                   .header("Authorization", "Basic " + pocClientCredential())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .body(body),
-              new ParameterizedTypeReference<HashMap<String, Object>>() {
-              });
+              new ParameterizedTypeReference<HashMap<String, Object>>() {});
       out.put("response", responseEntity.getBody());
     } catch (HttpClientErrorException e) {
       out.put("token_response",
           objectMapper.readValue(
-              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {
-              }));
+              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {}));
     } catch (RestClientException e) {
       log.error("error", e);
     }
@@ -151,7 +147,7 @@ public class GluuPocApplication {
 
   @RequestMapping("/oauth/client")
   public Object test4() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
-    // Parameters
+
     String tokenUrl = "https://sso1.infra.kurlycorp.kr/oxauth/restv1/token";
 
     RestTemplate restTemplate = sslIgnoreRestTemplate();
@@ -170,14 +166,12 @@ public class GluuPocApplication {
                   .header("Authorization", "Basic " + pocClientCredential())
                   .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                   .body(body),
-              new ParameterizedTypeReference<HashMap<String, Object>>() {
-              });
+              new ParameterizedTypeReference<HashMap<String, Object>>() {});
       out.put("response", responseEntity.getBody());
     } catch (HttpClientErrorException e) {
       out.put("token_response",
           objectMapper.readValue(
-              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {
-              }));
+              e.getResponseBodyAsString(), new TypeReference<HashMap<String, Object>>() {}));
     } catch (RestClientException e) {
       log.error("error", e);
     }
