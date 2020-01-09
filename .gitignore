@@ -12,3 +12,6 @@ build/
 *.iml
 *.ipr
 out/
+
+### test file
+*.ignore
