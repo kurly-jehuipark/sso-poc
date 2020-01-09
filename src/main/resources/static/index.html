@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://gitcdn.link/repo/GluuFederation/openid-implicit-client/master/openidconnect.js"></script>
+<script>
+var clientInfo = {
+  client_id : '5980a995-f938-47c4-b2ee-0589549718fb',
+  redirect_uri : 'http://localhost:8080/callback.html'
+};
+var providerInfo = OIDC.discover('https://sso1.infra.kurlycorp.kr');
+OIDC.setClientInfo( clientInfo );
+OIDC.setProviderInfo( providerInfo );
+OIDC.storeInfo(providerInfo, clientInfo);
+sessionStorage.removeItem('state');
+sessionStorage.removeItem('nonce');
+
+</script>
+<body>
+    <a href="https://sso1.infra.kurlycorp.kr/oxauth/restv1/end_session">세션종료</a> <br>
+    <button onClick="OIDC.login( {scope : 'openid profile email',
+                            response_type : 'token id_token'} );"
+        type="button">Implict</button> <br>
+    <a href="javascript:alert('아직 진행중')">Client Credential</a> <br>
+    <a href="javascript:alert('아직 진행중')">Resource Owner Password Credentials</a> <br>
+    <a href="https://sso1.infra.kurlycorp.kr/oxauth/restv1/authorize?scope=openid&response_type=code&client_id=51d2eade-bb8e-405b-b5e9-93dc11710d43&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauthorize%2Fcallback">Authorization Code Grant Type</a>
+</body>
+</html>
